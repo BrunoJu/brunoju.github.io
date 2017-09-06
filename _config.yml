@@ -84,20 +84,20 @@ service-worker: true
 
 
 
-# Friends
+# Intresting Places
 friends: [
     {
     #     title: "Su",
     #     href: "http://su.gallery/"
     # },{
-        title: "乱序",
-        href: "http://mida.re/"
+        title: "Mango Love Carrot",
+        href: "http://blog.mangolovecarrot.net/"
     },{
-        title: "前端外刊评论",
-        href: "http://qianduan.guru/"
+        title: "刘天斯的博客",
+        href: "http://www.liuts.com/"
     },{
-        title: "天镶的博客",
-        href: "http://lingyu.wang/"
+        title: "崔庆才的博客",
+        href: "http://cuiqingcai.com/"
     },{
         title: "Luke 的自留地",
         href: "http://hmqk1995.github.io"
