@@ -3,7 +3,7 @@ title: BrunoJu Blog
 SEOTitle: 文鸡的博客 | BrunoJu Blog
 header-img: img/home-bg.jpg
 email: zwq1004598932@gmail.com
-description: "运维，Python，虚拟化 | 篮球，旅游，喜欢中二苦行，拒绝说话 | 这里是 文鸡的个人博客，与你一起发现更大的世界。"
+description: "运维，Python，虚拟化 | 篮球，旅游，喜欢中二苦行，拒绝说话 | 这里是文鸡的个人博客，与你一起发现更大的世界。"
 keyword: "文鸡，朱文卿, BrunoJu, 坚持"
 url: "https://www.applemaze.cn/"              # your host, for absolute URL
 baseurl: ""                             # for example, '/blog' if your blog hosted on 'host/blog'

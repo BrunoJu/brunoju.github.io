@@ -1,8 +1,12 @@
-> 如果世界只是一个层层嵌套的Matrix，那么人生的意义只是过程  
-> 离开世界之前，一切都是过程。
+> 如果世界只是层层嵌套的Matrix，那么人生而就是为了死去。
 
-Hey，我是朱文卿，无聊科，四肢发达，头脑还不错，多出没于[博客](https://huangxuan.me)、[微博](weibo.com/huxpro)、[知乎](https://www.zhihu.com/people/huxpro/pins/posts)、[Twitter](https://twitter.com/Huxpro/)、[Github](http://github.com/huxpro)、[Medium](https://medium.com/@Huxpro) 等地带，绝招尚在开发中。
+Hey，我是朱文卿，标准的臭运维，四肢发达，喜欢打篮球而已，头脑还不错，最大的特点就是：*“代码界的奇葩豆瓣脑残粉”*。
 
-职业是软件工程师，[Web 工会](https://medium.com/ben-and-dion/team-web-3315aa447fb2#.359a9c6cl)活跃成员。曾被招募为淘宝网 · [阿里旅行](http://alitrip.com)前端工程师、微影时代 · [微票儿](http://www.wepiao.com/?r=movie)前端基础工程团队负责人、[饿了么](https://ele.me/) · 大前端团队 · [PWA 顾问](https://medium.com/elemefe/upgrading-ele-me-to-progressive-web-app-2a446832e509)。
+代码界的败类：
+[1]没有作品
+[2]没有开源软件项目
+[3]没有身材
+[4]没有颜值
+[5]没有女朋友
 
-一些作品和开源软件项目，👉 戳 [Portfolio](/portfolio)、[Github](http://github.com/huxpro)、[演说.io](http://https://zhuanlan.zhihu.com/p/21280918)。
+好了，别问了。
