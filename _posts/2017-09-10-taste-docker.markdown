@@ -1,0 +1,84 @@
+---
+layout:     post
+title:      "初试运维利器——Docker"
+date:       2017-09-10 15:00:00
+author:     "BrunoJu"
+header-img: "img/post/docker.png"
+tags:
+    - 容器
+---
+
+此处的docker都是基于Ubuntu系统
+
+apt源安装，但是可能版本比较旧
+$ sudo apt-get install docker.io
+
+使用官方提供的安装脚本，可以安装最新版本的docker，推荐此类安装方式
+#sudo apt-get install curl
+#curl -sSL https://get.docker.com/ | sh
+
+启动
+$ sudo service docker start
+
+检查是否成功安装
+#sudo docker run hello-world
+
+如果不想每次运行docker的时候都要写sudo，可以把用户加到docker组中，比如此时我的用户名是bruno，我想加入到docker组中
+$ sudo usermod -aG docker bruno
+
+
+测试：体验wordpress搭建过程
+bruno@Matrix:~$ docker run --name db --env MYSQL_ROOT_PASSWORD=example -d mariadb
+bruno@Matrix:~$ docker run --name MyWordPress --link db:mysql -p 8080:80 -d wordpress
+
+命令解释：
+-d 	服务在后台运行
+mariadb与wordpress	都是源中的镜像名，相当于App Store中的application的名称
+--name	用来设定docker中该进程的名称，必须保证该容器名称唯一性
+--env	设置进程运行的环境，比如这里顺便设置了MySQL的root密码
+--link	Add link to another container 这里的含义是 连接名称为db的容器，作为本容器的mysql
+
+
+测试：安装版本控制系统gitlab
+github必须公开源码，如果建立私有仓库是需要收费的。
+可以本地搭建gitlab作为公司的版本控制系统
+Gitlab的运行环境需要3各部分：
+1.postgresql数据库
+2.redis缓存服务
+3.gitlab服务
+
+bruno@Matrix:~$ docker run --name gitlab-postgresql -d \
+> --env 'DB_NAME=gitlabhq_production' \
+> --env 'DB_USER=gitlab' --env 'DB_PASS=password' \
+> sameersbn/postgresql:9.4-12
+bruno@Matrix:~$ docker run --name gitlab-redis -d sameersbn/redis
+bruno@Matrix:~$ docker run --name gitlab -d \
+> --link gitlab-postgresql:postgresql --link gitlab-redis:redisio \
+> --publish 10022:22 --publish 10080:80 \
+> --env 'GITLAB_PORT=10080' --env 'GITLAB_SSH_PORT=10022' \
+> --env 'GITLAB_SECRETS_DB_KEY_BASE=long-and-random-alpha-numeric-string' \
+> sameersbn/gitlab:8.4.4
+
+
+测试： 安装项目管理系统 Redmine
+bruno@Matrix:~$ docker run --name=postgresql-redmine -d \
+>--env='DB_NAME=redmine_porduction' --env='DB_USER=redmine' --env='DB_PASS=password' \
+> sameersbn/postgresql:9.4-12
+因为这里跟前面一样使用了sameersbn/postgresql:9.4-12这个镜像，就不需要再从官方repo中下载了，直接使用本地已经存在的 sameersbn/postgresql:9.4-12 镜像，所以启动本次容器的速度会显得非常之快。
+bruno@Matrix:~$ docker run --name=redmine -d \
+> --link=postgresql-redmine:postgresql --publish=10083:80 \
+> --env='REDMINE_PORT=10083' \
+> sameersbn/redmine:3.2.0-4
+
+此时，查看所有后台运行中的docker容器：
+
+可以发现的一点是：启动MyWordPress容器的时候用的 --port 与 启动 redmine、gitlab时候用的 --publish的效果好像是一样的，都是为了做端口的映射。
+所以查看docker的run参数帮助：
+bruno@Matrix:~$ docker run --help |egrep 'publish'
+  -p, --publish value               Publish a container's port(s) to the host (default [])
+  -P, --publish-all                 Publish all exposed ports to random ports
+原来-p是--publish的缩写，我还以为-p是port的意思，结果不是，这里需要注意。
+
+查看docker中的容器
+
+或者指定条目的时候，可以结合管道还有awk使用
