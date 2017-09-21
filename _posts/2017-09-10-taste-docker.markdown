@@ -8,23 +8,23 @@ tags:
     - 容器
 ---
 
-此处的docker都是基于Ubuntu系统
+*此处的docker都是基于Ubuntu系统*
 
 apt源安装，但是可能版本比较旧
-$ sudo apt-get install docker.io
+>$ sudo apt-get install docker.io
 
 使用官方提供的安装脚本，可以安装最新版本的docker，推荐此类安装方式
-#sudo apt-get install curl
-#curl -sSL https://get.docker.com/ | sh
+>$sudo apt-get install curl
+>$curl -sSL https://get.docker.com/ | sh
 
-启动
-$ sudo service docker start
+启动Docker守护进程
+>$ sudo service docker start
 
 检查是否成功安装
-#sudo docker run hello-world
+>$sudo docker run hello-world
 
 如果不想每次运行docker的时候都要写sudo，可以把用户加到docker组中，比如此时我的用户名是bruno，我想加入到docker组中
-$ sudo usermod -aG docker bruno
+>$ sudo usermod -aG docker bruno
 
 
 测试：体验wordpress搭建过程
