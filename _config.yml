@@ -99,25 +99,25 @@ friends: [
         title: "崔庆才的博客",
         href: "http://cuiqingcai.com/"
     },{
-        title: "Luke 的自留地",
-        href: "http://hmqk1995.github.io"
+        title: "Linux命令大全",
+        href: "http://man.linuxde.net/"
     },{
-        title: "Ebn's Blog",
-        href: "http://ebnbin.com/"
+        title: "CPU天梯排行榜",
+        href: "http://itianti.sinaapp.com/index.php/cpu"
     },{
-        title: "SmdCn's Blog",
-        href: "http://blog.smdcn.net"
+        title: "Hexo博客框架",
+        href: "https://hexo.io/zh-cn/"
     },{
-        title: "解旻的博客",
-        href: "http://xieminis.me/"
+        title: "菜鸟教程",
+        href: "http://www.runoob.com/"
     },{
-        title: "DHong Say",
-        href: "http://dhong.co"
+        title: "Xen Project",
+        href: "https://wiki.xenproject.org/wiki/Main_Page"
     },{
-        title: "尹峰以为",
-        href: "http://ingf.github.io/"
+        title: "Docker官网",
+        href: "https://www.docker.com/"
     },{
-        title: "前端神盾局",
-        href: "http://wepiaofei.github.io/blog/"
+        title: "树莓派官网",
+        href: "https://www.raspberrypi.org/"
     }
 ]
