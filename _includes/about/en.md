@@ -2,7 +2,7 @@
 
 > Is someone gona unplugged me now?
 
-Hi I am BrunoJu(Wenqing, Zhu), a boring operator. I am working for [SAP](https://www.sap.com/), responsible for OS level of SAP SaaS Cloud.
+Hi I am BJ(Wenqing, Zhu), a boring operator. I am working for [SAP](https://www.sap.com/), responsible for SAP SaaS Cloud operation.
 Here is my [GitHub](https://github.com/BrunoJu/), I will try to build some excellent open source project(Not yet begun, LOL).
 I am going to set up a shop selling my operation services or varies scripts on [TaoBao](https://www.taobao.com)(not yet begun too, LOL).
 
