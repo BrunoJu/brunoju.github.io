@@ -13,4 +13,4 @@ Hey，我是BJ，一个百无聊赖的运维，目前在[SAP](https://www.sap.co
 
 好了，别问了。
 
-这篇博客的版式来源于[github](https://github.com/Huxpro/huxpro.github.io)的jekyll开源项目, 由大神Hux提供，可以参见他的博客[Hux Blog](https://huangxuan.me/)。非常感谢分享。
+这篇博客的版式来源于[github](https://github.com/Huxpro/huxpro.github.io)的jekyll开源项目, 由Hux提供，可以参见他的博客[Hux Blog](https://huangxuan.me/)。非常感谢分享。

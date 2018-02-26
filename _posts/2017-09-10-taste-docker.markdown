@@ -4,6 +4,7 @@ title:      "初试运维利器——Docker"
 date:       2017-09-10 15:00:00
 author:     "BrunoJu"
 header-img: "img/post/docker.png"
+comment:    true
 tags:
     - 容器
 ---

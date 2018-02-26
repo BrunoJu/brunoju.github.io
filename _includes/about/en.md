@@ -1,6 +1,6 @@
 
 
-> Is someone gona unplugged me now?
+> Is someone going to unplugged me now?
 
 Hi I am BJ(Wenqing, Zhu), a boring operator. I am working for [SAP](https://www.sap.com/), responsible for SAP SaaS Cloud operation.
 Here is my [GitHub](https://github.com/BrunoJu/), I will try to build some excellent open source project(Not yet begun, LOL).
