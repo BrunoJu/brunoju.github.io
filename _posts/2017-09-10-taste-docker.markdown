@@ -1,5 +1,5 @@
 ---
-layout:     keynote
+layout:     post
 title:      "初试运维利器——Docker"
 date:       2017-09-10 15:00:00
 author:     "BrunoJu"
