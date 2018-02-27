@@ -1,7 +1,7 @@
 ---
 layout:     post
 title:      "Dota2_hask"
-date:       2018-02--26 15:00:00
+date:       2018-02-26 15:00:00
 author:     "BrunoJu"
 header-img: "img/post/docker.png"
 comment:    true
