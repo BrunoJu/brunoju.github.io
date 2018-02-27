@@ -1,9 +1,9 @@
 {
-    "name": "hux-blog",
-    "title": "Hux Blog",
-    "author": "Hux <huxpro@gmail.com>",
+    "name": "brunoju-blog",
+    "title": "BrunoJu Blog",
+    "author": "BrunoJu <zwq1004598932@gmail.com>",
     "version": "1.7.0",
-    "homepage": "http://brunoju.github.io",
+    "homepage": "http://www.applemaze.cn",
     "repository": {
         "type": "git",
         "url": "https://github.com/brunoju/huxpro.github.io"
