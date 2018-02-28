@@ -18,15 +18,15 @@ You(PHP) speak Chinese(PHP code), but the Eskimo(WebServer, like Apache/Nginx an
 That's the problem must be solved.
 OK, fine. Let's talk buiness on universal English(FastCGI protocol).
 
-### How do PHP transform php-code?
+## How do PHP transform php-code?
 About that, PHP has a module called **PHP-FPM**, you need to make sure the module is on your operation system, if not, please install it with below command:
 
 > yum install php-fpm
 
-### How do Webserver transform C language?
+## How do Webserver transform C language?
 Don't worry about this issue, almost all the webservers themselves have the translator responsible for transforming C language to FastCGI protocol.
 
-### Notice
+## Notice
 Only the Linux use the PHP-FPM module which is newer than PHP-CGI, Windows System still use the old one.
 They have the same function.
 
