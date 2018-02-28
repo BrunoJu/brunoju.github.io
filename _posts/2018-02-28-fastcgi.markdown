@@ -10,7 +10,7 @@ tags:
 ---
 
 #How to understand FastCGI
-For example, you(PHP) are going to talk buiness with Eskimo...
+For example, you(PHP) are going to talk business with Eskimo...
 
 You(PHP) speak Chinese(PHP code), but the Eskimo(WebServer, like Apache/Nginx and so forth) speak Eskimo(Great C language).
 
