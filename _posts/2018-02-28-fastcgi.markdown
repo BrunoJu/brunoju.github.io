@@ -11,9 +11,9 @@ tags:
 
 # How to understand FastCGI
 
-For example, you(PHP) are going to talk buiness with Esikimo...
+For example, you(PHP) are going to talk buiness with Eskimo...
 
-You(PHP) speak Chinese(PHP code), but the Eskimo(WebServer, like Apache/Nginx and so forth) speek Eskimo(Great C language).
+You(PHP) speak Chinese(PHP code), but the Eskimo(WebServer, like Apache/Nginx and so forth) speak Eskimo(Great C language).
 
 That's the problem must be solved.
 OK, fine. Let's talk buiness on universal English(FastCGI protocol).
