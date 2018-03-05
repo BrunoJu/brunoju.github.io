@@ -195,7 +195,7 @@ Removing gitlab_redis_1 ... done
 ```
 
 删除(down)某个项目比停止stop某个项目多出了removing的条目，可见应该是起到了docker rm container 删除容器的作用效果。
-down在命令行中的解释印证了我的猜想：
+down在命令行中的解释印证了我的猜想：    
 down               Stop and remove containers, networks, images, and volumes
 
 
