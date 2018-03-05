@@ -22,7 +22,7 @@ tags:
 - 针对守护进程的系统资源和全局信息的获取，如：docker info、docker deamon
 - 针对仓库的查询与下载等， 如：docker search、 docker pull
 - 针对镜像的查询、创建与删除， 如： docker images、docker build
-- 针对容器的查询、创建、开启、停止等，如：docker ps、docker ps、docker run
+- 针对容器的查询、创建、开启、停止等，如：docker ps、docker run
 
 
 ### Docker指令支持 赋值、解析变量、嵌套等使用
