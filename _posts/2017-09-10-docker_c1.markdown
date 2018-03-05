@@ -74,8 +74,10 @@ bruno@Matrix:~$ docker run --name gitlab -d \
 > --env 'GITLAB_SECRETS_DB_KEY_BASE=long-and-random-alpha-numeric-string' \
 > sameersbn/gitlab:8.4.4
 ```
+![docker_gitlab](https://brunoju.github.io/img/post/docker_gitlab.png)
 
 ### 测试： 安装项目管理系统 Redmine
+```
 bruno@Matrix:~$ docker run --name=postgresql-redmine -d \
 >--env='DB_NAME=redmine_porduction' --env='DB_USER=redmine' --env='DB_PASS=password' \
 > sameersbn/postgresql:9.4-12
@@ -84,10 +86,12 @@ bruno@Matrix:~$ docker run --name=redmine -d \
 > --link=postgresql-redmine:postgresql --publish=10083:80 \
 > --env='REDMINE_PORT=10083' \
 > sameersbn/redmine:3.2.0-4
+```
+![docker_redmine](https://brunoju.github.io/img/post/docker_redmine.png)
+
 
 此时，查看所有后台运行中的docker容器：
-
-可以发现的一点是：启动MyWordPress容器的时候用的 --port 与 启动 redmine、gitlab时候用的 --publish的效果好像是一样的，都是为了做端口的映射。
+![docker_ps](https://brunoju.github.io/img/post/docker_ps.png)
 所以查看docker的run参数帮助：
 ```
 bruno@Matrix:~$ docker run --help |egrep 'publish'
@@ -96,6 +100,5 @@ bruno@Matrix:~$ docker run --help |egrep 'publish'
 ```
 原来-p是--publish的缩写，我错误地以为-p是port的意思，结果不是，这里需要注意。
 
-查看docker中的容器
-
-或者指定条目的时候，可以结合管道还有awk使用
+查看docker中的容器或者指定条目的时候，可以结合管道还有awk使用
+![docker_ps_awk](https://brunoju.github.io/img/post/docker_ps_awk.png)
