@@ -9,7 +9,7 @@ tags:
     - 容器
 ---
 
-*此处的docker都是基于Ubuntu系统*
+##*此处的docker都是基于Ubuntu系统*
 
 apt源安装，但是可能版本比较旧
 ```
@@ -38,12 +38,12 @@ $sudo docker run hello-world
 $ sudo usermod -aG docker bruno
 ```
 
-### 测试：体验wordpress搭建过程
+###测试：体验wordpress搭建过程
 ```
 bruno@Matrix:~$ docker run --name db --env MYSQL_ROOT_PASSWORD=example -d mariadb
 bruno@Matrix:~$ docker run --name MyWordPress --link db:mysql -p 8080:80 -d wordpress
 ```
-[image](/img/post/docker_wordpress.png)
+[image](img/post/docker_wordpress.png)
 
 命令解释：
 -d 	服务在后台运行
@@ -53,7 +53,7 @@ mariadb与wordpress	都是源中的镜像名，相当于App Store中的applicati
 --link	Add link to another container 这里的含义是 连接名称为db的容器，作为本容器的mysql
 
 
-### 测试：安装版本控制系统gitlab
+###测试：安装版本控制系统gitlab
 github必须公开源码，如果建立私有仓库是需要收费的。因此可以本地搭建gitlab作为公司的版本控制系统
 
 Gitlab的运行环境需要3各部分：
@@ -75,7 +75,7 @@ bruno@Matrix:~$ docker run --name gitlab -d \
 > sameersbn/gitlab:8.4.4
 ```
 
-### 测试： 安装项目管理系统 Redmine
+###测试： 安装项目管理系统 Redmine
 bruno@Matrix:~$ docker run --name=postgresql-redmine -d \
 >--env='DB_NAME=redmine_porduction' --env='DB_USER=redmine' --env='DB_PASS=password' \
 > sameersbn/postgresql:9.4-12
