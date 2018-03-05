@@ -1,0 +1,205 @@
+---
+layout:     post
+title:      "Docker(3) 容器管理"
+date:       2017-09-12 19:00:00
+author:     "BrunoJu"
+header-img: "img/post/docker_c3.jpg"
+tags:
+    - 容器
+---
+
+# 单一容器管理
+Container ID具有唯一性,Name也具有唯一性,而Name存在的意义就是比Container ID方便记忆。    
+
+### 查询容器信息
+查看之前我们创建了一个名字为MyWordPress的容器，返回的信息是以JSON的格式展示
+```
+$ docker inspect MyWordPress
+```
+
+通过 -f 可以使用Golang的模板来提取指定部分的信息
+```
+bruno@Matrix:~$ docker inspect -f {{.State.Status}} MyWordPress
+bruno@Matrix:~$ docker inspect -f {{.NetworkSettings.Networks.bridge.MacAddress}} MyWordPress
+```
+两个测试命令可以看见，无论Json的嵌套有多少层。 外部总是固定的{{}}
+
+### 查询容器日志
+```
+bruno@Matrix:~$ docker logs MyWordPress
+```
+实时查询最新的日志，添加 -f 参数（与tail -f 的效果是一样的）
+```
+bruno@Matrix:~$ docker logs -f MyWordPress
+```
+### 查看系统资源占用情况
+```
+bruno@Matrix:~$ docker stats MyWordPress
+```
+![docker_container_status](https://brunoju.github.io/img/post/docker_container_status.png)
+
+### 容器内部命令
+经常有登入Docker容器内部执行命令的需求，可以在容器中启动sshd服务来响应用户登录，但是：sshd存在进程的开销，增加被攻击的风险，违反Docker倡导的“一个容器一个进程”的原则    
+因此Docker提供了原生的方式支持登录容器：docker exec  
+这里执行命令的时候，是进入容器内部输入命令,命令一旦执行完，登录就会被关闭，返回Bash  
+语法：$docker exec [Container] [Command]
+```
+bruno@Matrix:~$ docker exec MyWordPress ps aux
+```
+![docker_exec_exit](https://brunoju.github.io/img/post/docker_exec_exit.png)
+
+如果想登录到容器内部执行多项命令，可以加上 -it 参数
+-i, --interactive    Keep STDIN open even if not attached    
+-t, --tty            Allocate a pseudo-TTY    
+相当于以root的身份登入容器内，可以连续执行多条命令，执行完后通过exit退出。
+```
+bruno@Matrix:~$ docker exec MyWordPress -it  /bin/bash
+bruno@Matrix:~$ exit
+```
+![docker_exec_it](https://brunoju.github.io/img/post/docker_exec_it.png)
+
+# 多容器管理
+Docker提倡的理念是“一个容器一个进程”，如果一个服务由多个进程组成（事实上的确就是），就需要创建多个容器组成一个系统，相互分工和配合来对外提供服务。    
+比如刚才的wordpress服务，需要两个容器：db和MyWordPress，两者一定是有启动和关闭的先后顺序的。对于gitlab系统，需要考虑更细致的顺序：postgresql -> redis -> gitlab    
+这时候就需要用到容器的编排工具。它允许用户在一个模板(YAML格式）中定义一组相关联的应用容器，这组容器会根据配置模板中的 --link 等参数，对启动的优先级自动排序，然后一条简单命令 docker-compose up 就可以把统一服务的多个容器依次创建和启动。
+
+但是首先需要安装该组件
+```
+$ sudo apt-get install docker-compose
+```
+
+### MyWordPress案例容器
+如果该案例容器还在运行，请先停掉
+```
+$ docker stop db MyWordPress
+```
+然后创建一个项目文件夹，并在其中创建名为docker-compose.yml的文件,docker-compose默认就会找这个文件名，否则需要用到 -f 来指定特定的文件名称。注意YAML的格式是非常需要练习的，要非常注意是否有空格的存在。
+
+```
+bruno@Matrix:~$ mkdir ~/wordpress
+bruno@Matrix:~$ cat wordpress/docker-compose.yml
+wordpress:
+    image: wordpress
+    links:
+        - db:mysql
+    ports:
+        - 8080:80
+
+db:
+    image: mariadb
+    environment:
+        - MYSQL_ROOT_PASSWORD:example
+```
+
+后台守护进程的方式启动
+```
+bruno@Matrix:~$ cd wordpress&&docker-compose up -d
+```
+![docker_compose_wordpress](https://brunoju.github.io/img/post/docker_compose_wordpress.png)
+在看容器中，只有一个名为wordpress_wordpress_1的容器正在运行中，书上说还应该有一个wordpress_db_1容器才对，但是这里没有，而且wordpress还是正常运行起来了。
+![docker_comose_wordpress_screenshot](https://brunoju.github.io/img/post/docker_compose_wordpress_screenshot.png)
+
+还有一个疑问是：以docker-compose启动的容器的默认命名方式是什么？    
+我们稍微修改一下原本的目录名称，和docker-compose.yml的文件内容
+![docker_comose_rename_operation](https://brunoju.github.io/img/post/docker_compose_rename_operation.png)
+
+关闭之前正在运行的容器wordpress_wordpress_1，之所以要关闭是因为映射用到了同样的端口，这是不允许的操作。然后基于新的编排文件启动新的容器
+![docker_comose_rename_newcontainer](https://brunoju.github.io/img/post/docker_compose_rename_newcontainer.png)
+我们可以看见docker-compose运行起来的容器的命名方式是与目录还有容器的最高依赖层有关。最高依赖层就是最后应该启动的容器。    
+比如之前的目录名称是wordpress，最高依赖层是wordpress，容器的名称就是wordpress_wordpress_1    
+现在我们把目录改成了MyWordPress，最高依赖层是MyWordPress，容器的名称就是mywordpress_MyWordPress_1    
+
+>注意：虽然Docker compose可以根据--link的参数项判断并生成正确的启动顺序，但这种顺序仅仅是容器的顺序，假如容器A的进程a依赖容器B的进程b，但进程b启动需要耗费很长的时间的话，这时候虽然容器B是先于容器A创建和启动的，但是进程a仍然有可能和进程不能正常交互而启动失败，因为虽然容器B已启动但进程b还没有启动完成。在这种情况下，docker compose无能为力，需要进程a自行增加一些判断等待和重试机制。
+
+
+### 再看如何用docker compose管理之前的gitlab和redmine项目。
+```
+bruno@Matrix:~$ cat gitlab/docker-compose.yml
+
+gitlab:
+    image: sameersbn/gitlab:8.4.4
+    links:
+        - postgresql:postgresql
+        - redis:redisio
+    ports:
+        - "10022:22"
+        - "10080:80"
+    environment:
+        - GITLAB_PORT=10080
+        - GITLAB_SSH_PORT=10022
+        - GITLAB_SECRETS_DB_KEY_BASE=long-and-random-alpha-numeric-string
+
+redis:
+    image: sameersbn/redis
+
+postgresql:
+    image: sameersbn/postgresql:9.4-12
+    environment:
+        - DB_NAME=gitlabhq_production
+        - DB_USER=gitlab
+        - DB_PASS=password
+
+bruno@Matrix:~$ cat redmine/docker-compose.yml
+
+redmine:
+    image: sameersbn/redmine:3.2.0-4
+    links:
+        - postgresql:postgresql
+    ports:
+        - 10083:80
+    environment:
+        - REDMINE_PORT=10083
+
+postgresql:
+    image: sameersbn/postgresql:9.4-12
+    environment:
+        - DB_NAME=redmine_production
+        - DB_USER=redmine
+        - DB_PASS=password
+```
+停止项目
+```
+bruno@Matrix:~$ docker-compose -f gitlab/docker-compose.yml stop
+Stopping gitlab_gitlab_1 ... done
+Stopping gitlab_postgresql_1 ... done
+Stopping gitlab_redis_1 ... done
+```
+
+启动项目
+```
+bruno@Matrix:~$ docker-compose -f gitlab/docker-compose.yml start
+Starting postgresql ... done
+Starting redis ... done
+Starting gitlab ... done
+```
+
+项目进程
+```
+bruno@Matrix:~$ docker-compose -f gitlab/docker-compose.yml ps
+       Name                      Command              State                           Ports                         
+-------------------------------------------------------------------------------------------------------------------
+gitlab_gitlab_1       /sbin/entrypoint.sh app:start   Up      0.0.0.0:10022->22/tcp, 443/tcp, 0.0.0.0:10080->80/tcp
+gitlab_postgresql_1   /sbin/entrypoint.sh             Up      5432/tcp                                              
+gitlab_redis_1        /sbin/entrypoint.sh             Up      6379/tcp       
+```
+
+删除项目
+```
+bruno@Matrix:~$ docker-compose -f gitlab/docker-compose.yml down
+Stopping gitlab_gitlab_1 ... done
+Stopping gitlab_postgresql_1 ... done
+Stopping gitlab_redis_1 ... done
+Removing gitlab_gitlab_1 ... done
+Removing gitlab_postgresql_1 ... done
+Removing gitlab_redis_1 ... done
+```
+
+删除(down)某个项目比停止stop某个项目多出了removing的条目，可见应该是起到了docker rm container 删除容器的作用效果。
+down在命令行中的解释印证了我的猜想：
+down               Stop and remove containers, networks, images, and volumes
+
+
+>非常注意：docker的容器启动有不小的延迟时间，bash虽然成功执行了，但是在服务在网页端的展现通常需要10秒以上的延迟。
+
+## 总结
+在我看来docker-compose的作用不仅仅是设计了相关容器之间的启动顺序，其最令人惊喜的一点是：docker的管理对象从“单个容器”转向了“单个项目”，这对多种服务坏境下的服务的快速管理提供了高效的管理手段。
