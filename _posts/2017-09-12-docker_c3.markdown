@@ -112,7 +112,7 @@ bruno@Matrix:~$ cd wordpress&&docker-compose up -d
 >注意：虽然Docker compose可以根据--link的参数项判断并生成正确的启动顺序，但这种顺序仅仅是容器的顺序，假如容器A的进程a依赖容器B的进程b，但进程b启动需要耗费很长的时间的话，这时候虽然容器B是先于容器A创建和启动的，但是进程a仍然有可能和进程不能正常交互而启动失败，因为虽然容器B已启动但进程b还没有启动完成。在这种情况下，docker compose无能为力，需要进程a自行增加一些判断等待和重试机制。
 
 
-### 再看如何用docker compose管理之前的gitlab和redmine项目。
+### compose管理gitlab和redmine项目
 ```
 bruno@Matrix:~$ cat gitlab/docker-compose.yml
 
