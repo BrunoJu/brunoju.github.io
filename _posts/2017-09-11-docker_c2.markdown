@@ -13,32 +13,34 @@ tags:
 - 镜像		Image ≈ installation package
 - 容器		Container ≈ process
 
-仓库 类似于iPhone手机的APP应用商店，里面存放已经打包好的Docker应用——Docker镜像
-镜像 类似于Windows里面的软件安装包
-容器 都是基于镜像创建的， 基于一个镜像可以创建若干个名字不同但是功能相同的容器
+#### 仓库 类似于iPhone手机的APP应用商店，里面存放已经打包好的Docker应用——Docker镜像
+#### 镜像 类似于Windows里面的软件安装包
+#### 容器 都是基于镜像创建的， 基于一个镜像可以创建若干个名字不同但是功能相同的容器
 
 ### 常用docker命令
-首先需要明确知道的一点是：docker命令的操作对象主要针对4个方面：
+首先需要明确知道的一点是：docker命令的操作对象主要针对4个方面
 - 针对守护进程的系统资源和全局信息的获取，如：docker info、docker deamon
 - 针对仓库的查询与下载等， 如：docker search、 docker pull
 - 针对镜像的查询、创建与删除， 如： docker images、docker build
 - 针对容器的查询、创建、开启、停止等，如：docker ps、docker ps、docker run
 
 
-### Docker指令除了单条使用外，还支持 赋值、解析变量、嵌套 等使用
-如：获取容器的ID, 根据ID提交到仓库(这也就是创建新镜像的步骤)
+### Docker指令支持 赋值、解析变量、嵌套等使用
+**如：获取容器的ID, 根据ID提交到仓库(这也就是创建新镜像的步骤)**
+```
 $ ID=$(docker run -d ubuntu echo hello world)
-hello world
 $docker commit $ID helloworld
-fd08a884dc79
+```
 
-如： 删除所有停止运行的容器
+**如： 删除所有停止运行的容器**
+```
 $ docker rm $(docker ps -a -q)
+```
 ![docker_rm_all](https://brunoju.github.io/img/post/docker_rm_all.png)
-这是删除全部的容器的命令，正在运行中的容器会报错，不会被此命令删除。
-解释：
--q, --quiet           Only display numeric IDs
-需要注意：删除容器在默认情况下，会删除容器中的数据。
+这是删除全部的容器的命令，正在运行中的容器会报错，不会被此命令删除。    
+需要注意：删除容器在默认情况下，会删除容器中的数据。    
+参数解释：-q, --quiet           Only display numeric IDs
+
 
 
 
@@ -48,7 +50,7 @@ $ docker rm $(docker ps -a -q)
 
 内部组织结构
 ![docker_inner](https://brunoju.github.io/img/post/docker_inner.png)
-在一台主机上面，首先要启动一个守护进程（docker deamon），所有的容器都被deamon控制。
+在一台主机上面，首先要启动一个守护进程（docker deamon），所有的容器都被deamon控制。    
 同时deamon监听并接收docker客户端（Docker Client）指令，并将执行结果返回。
 
 
@@ -71,7 +73,7 @@ $ docker search tutorial
 ```
 $ docker pull learn/tutorial
 ```
-运行下载的镜像，并输出“hello world”。为了做到这一点，需要在容器中运行shell命令“echo”
+运行下载的镜像，并输出“hello world”。为了做到这一点，需要在容器中运行shell命令“echo”    
 可以看见，在我没有命名容器的名称的时候，它有个默认的名称：happy_rosalind
 ```
 bruno@Matrix:~$ docker run learn/tutorial echo "hello world"
@@ -123,5 +125,5 @@ bruno@Matrix:~$ docker push learn/ping
 ![docker_push_new_img](https://brunoju.github.io/img/post/docker_push_new_img.png)
 
 ## 总结
-至此为止，差不多所有常用的docker命令已经全在这里了。如果能够彻底搞清楚repository，image和container的关系，那么学习起这些基础的命令一般是很轻松的。
+至此为止，差不多所有常用的docker命令已经全在这里了。如果能够彻底搞清楚repository，image和container的关系，那么学习起这些基础的命令一般是很轻松的。    
 下一章，我们将深入探讨docker的高级使用。
