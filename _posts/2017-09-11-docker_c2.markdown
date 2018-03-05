@@ -13,9 +13,9 @@ tags:
 - 镜像		Image ≈ installation package
 - 容器		Container ≈ process
 
-#### 仓库 类似于iPhone手机的APP应用商店，里面存放已经打包好的Docker应用——Docker镜像
-#### 镜像 类似于Windows里面的软件安装包
-#### 容器 都是基于镜像创建的， 基于一个镜像可以创建若干个名字不同但是功能相同的容器
+仓库 类似于iPhone手机的APP应用商店，里面存放已经打包好的Docker应用——Docker镜像    
+镜像 类似于Windows里面的软件安装包    
+容器 都是基于镜像创建的， 基于一个镜像可以创建若干个名字不同但是功能相同的容器    
 
 ### 常用docker命令
 首先需要明确知道的一点是：docker命令的操作对象主要针对4个方面
