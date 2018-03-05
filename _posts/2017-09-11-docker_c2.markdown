@@ -56,12 +56,12 @@ $ docker rm $(docker ps -a -q)
 
 ## 动手实践常用命令
 
-**查询版本**
+**1.查询版本**
 ```
 $ docker -v
 ```
 
-**查询某个名称的镜像**    
+**2.查询某个名称的镜像**    
 ```
 $ docker search tutorial
 ```
@@ -69,7 +69,7 @@ $ docker search tutorial
 每个用户都可以在官方Repo注册自己的账户，发布自己的Docker镜像，使用“用户名/镜像名”的命名方式可以让不同的用户拥有相同的镜像名称而互不干扰。
 
 
-**下载镜像**    
+**3.下载镜像**    
 ```
 $ docker pull learn/tutorial
 ```
@@ -80,14 +80,14 @@ bruno@Matrix:~$ docker run learn/tutorial echo "hello world"
 ```
 ![docker_hello_world](https://brunoju.github.io/img/post/docker_hello_world.png)
 
-**修改容器**   
+**4.修改容器**   
 在容器内部安装ping（learn/tutorial镜像是基于Ubuntu系统构建的）
 ```
 bruno@Matrix:~$ docker run learn/tutorial apt-get install -y ping
 ```
 注意：容器会自动加载宿主机的一些配置文件，比如说这里的安装ping安装后就加载了宿主机的/etc/resolv.conf的 DNS 解析配置。
 
-**创建新镜像**    
+**5.创建新镜像**    
 首先找到最后一个创建的容器的ID号，然后用commit将容器提交为新的镜像，最后产生的就是新镜像的ID
 ```
 bruno@Matrix:~$ docker ps -l
@@ -95,7 +95,7 @@ bruno@Matrix:~$ docker commit ed23ed learn/ping
 ````
 ![docker_create_img](https://brunoju.github.io/img/post/docker_create_img.png)
 
-**使用新镜像**    
+**6.使用新镜像**    
 基于刚才我们创建的新镜像(保存在了本地img目录中，此时并没有push到官网repository中)，创建新的容器
 ```
 bruno@Matrix:~$ docker run learn/ping ping www.google.com
@@ -103,13 +103,13 @@ bruno@Matrix:~$ docker run learn/ping ping www.google.com
 ![docker_use_new_img](https://brunoju.github.io/img/post/docker_use_new_img.png)
 
 
-**查询容器信息**    
+**7.查询容器信息**    
 inpect指令可以看到单个容器最为详细的信息,容器ID的前3~4个字符就能指定一个容器了。
 ```
 bruno@Matrix:~$ docker inspect 1cc6
 ```
 
-**把镜像上传到Repo**    
+**8.把镜像上传到Repo**    
 首先查看本地Images
 ```
 bruno@Matrix:~$ docker images
