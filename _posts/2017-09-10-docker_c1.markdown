@@ -43,7 +43,7 @@ $ sudo usermod -aG docker bruno
 bruno@Matrix:~$ docker run --name db --env MYSQL_ROOT_PASSWORD=example -d mariadb
 bruno@Matrix:~$ docker run --name MyWordPress --link db:mysql -p 8080:80 -d wordpress
 ```
-![docker_wordpress](img/post/docker_wordpress.png)
+![docker_wordpress](https://brunoju.github.io/img/post/docker_wordpress.png)
 
 命令解释：
 -d 	服务在后台运行
