@@ -96,7 +96,7 @@ db:
 bruno@Matrix:~$ cd wordpress&&docker-compose up -d
 ```
 ![docker_compose_wordpress](https://brunoju.github.io/img/post/docker_compose_wordpress.png)
-在看容器中，只有一个名为wordpress_wordpress_1的容器正在运行中，书上说还应该有一个wordpress_db_1容器才对，但是这里没有，而且wordpress还是正常运行起来了。
+在看容器中，只有一个名为wordpress_wordpress_1的容器正在运行中。也就是说docker-compose插件使得多个容器变成了一个容器的组合。
 ![docker_comose_wordpress_screenshot](https://brunoju.github.io/img/post/docker_compose_wordpress_screenshot.png)
 
 还有一个疑问是：以docker-compose启动的容器的默认命名方式是什么？    
@@ -199,7 +199,7 @@ down在命令行中的解释印证了我的猜想：
 down               Stop and remove containers, networks, images, and volumes
 
 
->非常注意：docker的容器启动有不小的延迟时间，bash虽然成功执行了，但是在服务在网页端的展现通常需要10秒以上的延迟。
+>注意：docker的容器启动有不小的延迟时间，bash虽然成功执行了，但是在服务在网页端的展现通常需要10秒以上的延迟。
 
 ## 总结
 在我看来docker-compose的作用不仅仅是设计了相关容器之间的启动顺序，其最令人惊喜的一点是：docker的管理对象从“单个容器”转向了“单个项目”，这对多种服务坏境下的服务的快速管理提供了高效的管理手段。
