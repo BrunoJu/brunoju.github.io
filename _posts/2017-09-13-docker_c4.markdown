@@ -1,0 +1,200 @@
+---
+layout:     post
+title:      "Docker(4) 镜像管理"
+date:       2017-09-13 22:00:00
+author:     "BrunoJu"
+header-img: "img/post/docker_c4.jpg"
+tags:
+    - 容器
+---
+
+
+##什么是镜像
+所谓的镜像就是一堆只读层的统一视角，这些只读层是docker内部的实现细节，并且能够在运行docker的主机的文件系统上访问到，而用户却感觉不到分层的存在。    
+
+新容器在创建后，不创建镜像就可以运行了。如果为了节省存储空间可以删除，默认不会删除，因为该镜像还有可能用于创建其他新镜像。
+删除镜像
+```
+$ docker rmi IMAGE_ID
+```
+
+docker在Ubuntu中的信息可以通过docker info来查看，默认路径/usr/lib/docker
+
+
+###显示所有的镜像
+```
+bruno@Matrix:~$ docker images -a
+```
+![docker_imge_display](https://brunoju.github.io/img/post/docker_image_display.png)
+每个镜像都有唯一的 IMAGE ID 这个和Container ID 一样，默认128位，默认显示16位作为它的缩略形式。也可以使用Repo名称和Tag版本号组合成唯一标识。我们在下载镜像的时候通常就是使用第二种方式。
+
+###镜像的分层
+之前说过了，镜像具有分层的机制，相同部分独立成一层，只需要存储一份就可以了，所以实际上镜像所占的磁盘空间要远远小于所有镜像大小（Size）的总和。    
+这种分层的机制是通过联合文件系统（union filesystem）将各层的文件系统叠加在一起来实现的。
+![docker_imge_hierarchy](https://brunoju.github.io/img/post/docker_image_hierarchy.png)
+通过docker history可以查询镜像一共有多少个层级，每一层具体都对下一层做了何种操作
+```
+bruno@Matrix:~$ docker history sameersbn/redis
+```
+
+![docker_history_display](https://brunoju.github.io/img/post/docker_history_display.png)
+
+###查询层中操作
+每一层对于下一层的具体的操作都在CREATED BY中，需要加上 --no-trunc 指令才能看到更为详细的信息。
+```
+bruno@Matrix:~$ docker history sameersbn/redis --no-trunc
+```
+
+###分层镜像特征
+对于分层的docker镜像有两大特征
+1. 已有的分层只能读，不能写
+2. 上层镜像的优先级高于底层（上层的文件能够覆盖下层）
+
+>容器是在镜像的基础上创建的，容器从文件系统的角度来说，他是在分层镜像的基础上增加了一个新的空白分层，此空白分层是可读写的。所以我们这里要明确的一点是：
+容器的定义和镜像几乎是一模一样的，也是一堆层的统一视角，唯一的区别在于容器的最上面的那一层是可读可写的。**容器=镜像+可读写层**， 并且容器的定义并没有提及是否要处于运行中的状态。
+
+![docker_image_container](https://brunoju.github.io/img/post/docker_image_container.png)
+
+对于两者之间的关系：
+- 基于镜像新创建的容器启动后是可写的
+- 所有的写操作都会存储在容器最上面的可读写层
+- 最后通过docker commit命令将容器生成新的镜像
+
+
+## Dockerfile
+我们通过对容器的可读写层的修改来生成新的镜像，这里会出现两种问题：    
+- 这种方式会让镜像的层数越来越多，达到联合文件系统所允许的最高层数（aufs最高支持128层）    
+- 如果基础镜像需要修改或升级，那么基于它的所有镜像不能依靠这样的方式来进行维护
+
+这时候，我们就需要用到Dockerfile文件了。    
+在Linux中，makefile文件是编译命令make的基准，如果源文件有改动，只需要修改Makefile文件，再一次make一下，就能生成新的可执行的二进制文件。
+Docker提供了和Makefile完全一样的机制来管理镜像，这就是Dockfile    
+
+### dockerfile的语法
+首先看一下之前使用的一个镜像(sameersbn/redis)的Dockerfile的文件
+```
+
+FROM sameersbn/ubuntu:16.04.20180124
+MAINTAINER sameer@damagehead.com
+
+ENV REDIS_USER=redis \
+    REDIS_DATA_DIR=/var/lib/redis \
+    REDIS_LOG_DIR=/var/log/redis
+
+RUN apt-get update \
+ && DEBIAN_FRONTEND=noninteractive apt-get install -y redis-server \
+ && sed 's/^daemonize yes/daemonize no/' -i /etc/redis/redis.conf \
+ && sed 's/^bind 127.0.0.1/bind 0.0.0.0/' -i /etc/redis/redis.conf \
+ && sed 's/^# unixsocket /unixsocket /' -i /etc/redis/redis.conf \
+ && sed 's/^# unixsocketperm 755/unixsocketperm 777/' -i /etc/redis/redis.conf \
+ && sed '/^logfile/d' -i /etc/redis/redis.conf \
+ && rm -rf /var/lib/apt/lists/*
+
+COPY entrypoint.sh /sbin/entrypoint.sh
+RUN chmod 755 /sbin/entrypoint.sh
+
+EXPOSE 6379/tcp
+VOLUME ["${REDIS_DATA_DIR}"]
+ENTRYPOINT ["/sbin/entrypoint.sh"]
+```
+从这个例子可以看出每行都以一个关键字为行首，如果一个行内容过长，他就是使用“/”把多行连接到一起    
+FROM  从何种基础镜像开始创建该镜像
+MAINTAINER  该镜像创建者
+ENV 设置环境变量
+RUN 运行shell命令，如果有多条命令可以用 && 连接，在这里是采用非交互式的方法安装了redis-server
+COPY  将编译机本地文件拷贝到镜像文件中(文件整合到该镜像中才能让容器找到并执行)
+EXPOSE  指定监听的端口
+ENTRYPOINT  这个关键字和以上所有的关键字是有区别的，上面的关键字都是在构成镜像时执行，而这个关键字是预执行命令，在创建镜像的时候不执行，而是等到使用该镜像创建容器，容器启动之后才执行的命令。它用来指定将来创建的新容器使用/sbin/entrypoint.sh 来启动redis服务。    
+
+entrypoint.sh的内容如下
+```
+#!/bin/bash
+set -e
+
+REDIS_PASSWORD=${REDIS_PASSWORD:-}
+
+map_redis_uid() {
+  USERMAP_ORIG_UID=$(id -u redis)
+  USERMAP_ORIG_GID=$(id -g redis)
+  USERMAP_GID=${USERMAP_GID:-${USERMAP_UID:-$USERMAP_ORIG_GID}}
+  USERMAP_UID=${USERMAP_UID:-$USERMAP_ORIG_UID}
+  if [ "${USERMAP_UID}" != "${USERMAP_ORIG_UID}" ] || [ "${USERMAP_GID}" != "${USERMAP_ORIG_GID}" ]; then
+    echo "Adapting uid and gid for redis:redis to $USERMAP_UID:$USERMAP_GID"
+    groupmod -g "${USERMAP_GID}" redis
+    sed -i -e "s/:${USERMAP_ORIG_UID}:${USERMAP_GID}:/:${USERMAP_UID}:${USERMAP_GID}:/" /etc/passwd
+  fi
+}
+
+create_socket_dir() {
+  mkdir -p /run/redis
+  chmod -R 0755 /run/redis
+  chown -R ${REDIS_USER}:${REDIS_USER} /run/redis
+}
+
+create_data_dir() {
+  mkdir -p ${REDIS_DATA_DIR}
+  chmod -R 0755 ${REDIS_DATA_DIR}
+  chown -R ${REDIS_USER}:${REDIS_USER} ${REDIS_DATA_DIR}
+}
+
+create_log_dir() {
+  mkdir -p ${REDIS_LOG_DIR}
+  chmod -R 0755 ${REDIS_LOG_DIR}
+  chown -R ${REDIS_USER}:${REDIS_USER} ${REDIS_LOG_DIR}
+}
+
+map_redis_uid
+create_socket_dir
+create_data_dir
+create_log_dir
+
+# allow arguments to be passed to redis-server
+if [[ ${1:0:1} = '-' ]]; then
+  EXTRA_ARGS="$@"
+  set --
+fi
+
+# default behaviour is to launch redis-server
+if [[ -z ${1} ]]; then
+  echo "Starting redis-server..."
+  exec start-stop-daemon --start --chuid ${REDIS_USER}:${REDIS_USER} --exec $(which redis-server) -- \
+    /etc/redis/redis.conf ${REDIS_PASSWORD:+--requirepass $REDIS_PASSWORD} ${EXTRA_ARGS}
+else
+  exec "$@"
+fi
+```
+
+
+### 编译dockerfile
+当 dockerfile 和 entrypoint.sh 文件都准备好之后，我们就可以使用docker build 命令来编译,用参数 -t 来指定该镜像的名称    
+构建完毕后，就能使用 docker images 查到该镜像了。
+```
+$ docker build -t image_redis:v1.0
+```
+
+有了dockerfile的文件，维护镜像就很简单了，只要简单修改Dockerfile的某条语句，通过 docker build 重新构建即可，另外还可以通过 -t 选项指定一个新的版本，可以很方便的在新旧两个版本之间快速切换    
+有了该镜像，就可以通过 docker run 的命令创建和使用新的容器了。但是该镜像只存在于编译主机，如果需要分发到其他机器还需要用到Docker仓库。    
+
+
+### 编写dockerfile文件
+通过Dockerfile文件build的镜像首先需要创建最最底层的系统镜像，需要使用到debootstrap工具，它可以用来定制自己需要的最小化的Linux基础镜像，这里我们制作一个Ubuntu14.04的基础镜像，并把系统时区修改为东八区（修改时区只是个例子，目的是为了告诉大家这里可以任意修改系统的任何文件）
+```
+bruno@Matrix:~$ sudo apt-get install debootstrap
+bruno@Matrix:~$ sudo debootstrap --arch amd64 trusty ubuntu-trusty http://mirrors.163.com/ubuntu/
+bruno@Matrix:~$ cd ubuntu-trusty/
+bruno@Matrix:~/ubuntu-trusty$ sudo cp usr/share/zoneinfo/Asia/Shanghai etc/localtime
+bruno@Matrix:~/ubuntu-trusty$ sudo tar -c .|docker import - ubuntu1404-baseimage:1.0
+sha256:0897a79d43e7670b2336b8c13cccc9dd522849d51bd807d34dc8c8d3123661e9
+```
+![docker_dockerfile_image](https://brunoju.github.io/img/post/docker_dockerfile_image.png)
+
+根据此镜像创建一个容器，查看时区是否已经改成了东八区
+```
+bruno@Matrix:~/ubuntu-trusty$ docker run -it ubuntu1404-baseimage:1.0 /bin/bash
+root@e2060baf5573:/# cat /etc/issue
+Ubuntu 14.04 LTS \n \l
+
+root@e2060baf5573:/# date          
+Sun Sep 10 15:47:35 CST 2017
+```
+这样我们就只做好了属于自己的私有镜像。我们的应用层的镜像就可以在该镜像的基础上继续扩展了。
