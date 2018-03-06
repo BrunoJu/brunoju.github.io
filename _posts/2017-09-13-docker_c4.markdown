@@ -31,7 +31,7 @@ bruno@Matrix:~$ docker images -a
 ### 镜像的分层
 之前说过了，镜像具有分层的机制，相同部分独立成一层，只需要存储一份就可以了，所以实际上镜像所占的磁盘空间要远远小于所有镜像大小（Size）的总和。    
 这种分层的机制是通过联合文件系统（union filesystem）将各层的文件系统叠加在一起来实现的。
-![docker_imge_hierarchy](https://brunoju.github.io/img/post/docker_image_hierarchy.png)
+![docker_image_hierarchy](https://brunoju.github.io/img/post/docker_image_hierarchy.png)
 通过docker history可以查询镜像一共有多少个层级，每一层具体都对下一层做了何种操作
 ```
 bruno@Matrix:~$ docker history sameersbn/redis
