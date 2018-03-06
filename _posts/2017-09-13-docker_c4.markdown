@@ -9,7 +9,7 @@ tags:
 ---
 
 
-##什么是镜像
+## 什么是镜像
 所谓的镜像就是一堆只读层的统一视角，这些只读层是docker内部的实现细节，并且能够在运行docker的主机的文件系统上访问到，而用户却感觉不到分层的存在。    
 
 新容器在创建后，不创建镜像就可以运行了。如果为了节省存储空间可以删除，默认不会删除，因为该镜像还有可能用于创建其他新镜像。
@@ -21,14 +21,14 @@ $ docker rmi IMAGE_ID
 docker在Ubuntu中的信息可以通过docker info来查看，默认路径/usr/lib/docker
 
 
-###显示所有的镜像
+### 显示所有的镜像
 ```
 bruno@Matrix:~$ docker images -a
 ```
 ![docker_imge_display](https://brunoju.github.io/img/post/docker_image_display.png)
 每个镜像都有唯一的 IMAGE ID 这个和Container ID 一样，默认128位，默认显示16位作为它的缩略形式。也可以使用Repo名称和Tag版本号组合成唯一标识。我们在下载镜像的时候通常就是使用第二种方式。
 
-###镜像的分层
+### 镜像的分层
 之前说过了，镜像具有分层的机制，相同部分独立成一层，只需要存储一份就可以了，所以实际上镜像所占的磁盘空间要远远小于所有镜像大小（Size）的总和。    
 这种分层的机制是通过联合文件系统（union filesystem）将各层的文件系统叠加在一起来实现的。
 ![docker_imge_hierarchy](https://brunoju.github.io/img/post/docker_image_hierarchy.png)
@@ -39,13 +39,13 @@ bruno@Matrix:~$ docker history sameersbn/redis
 
 ![docker_history_display](https://brunoju.github.io/img/post/docker_history_display.png)
 
-###查询层中操作
+### 查询层中操作
 每一层对于下一层的具体的操作都在CREATED BY中，需要加上 --no-trunc 指令才能看到更为详细的信息。
 ```
 bruno@Matrix:~$ docker history sameersbn/redis --no-trunc
 ```
 
-###分层镜像特征
+### 分层镜像特征
 对于分层的docker镜像有两大特征
 1. 已有的分层只能读，不能写
 2. 上层镜像的优先级高于底层（上层的文件能够覆盖下层）
