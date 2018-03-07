@@ -1,0 +1,100 @@
+---
+layout:     post
+title:      "Docker(5) 仓库管理"
+date:       2017-09-14 10:22:00
+author:     "BrunoJu"
+header-img: "img/post/docker_c5.jpg"
+tags:
+    - 容器
+---
+
+Docker官方目前维护着一个公有仓库 [Docker Hub ](https://hub.docker.com)    
+公有仓库 Docker Hub 还支持用户创建私有的镜像仓库，用于私有镜像的存储和跨主机部署，而在github上如果要建立自己的私有仓库是需要收费的。   
+如果需要上传镜像，就必须要在这个公有仓库上创建自己的账号，然后在主机上登录
+```
+$ docker login
+上传镜像
+$ docker push IMAGE
+搜索镜像
+$ docker search IMAGE
+下载镜像
+ $ docker pull IMAGE
+```
+
+## 建立私有仓库
+考虑到诸多因素下，建立自己的私有仓库是必须要的，下面是建立私有仓库的步骤
+Docker官方已经提供了docker-registry组件，我们可以用它来构建我们自己的私有镜像仓库。registry在Repo中的解释如下    
+*The Docker Registry 2.0 implementation for storing and distributing Docker images*    
+
+对于registry的安装有两种方式
+- 使用镜像方式
+- 使用rpm包方式
+
+### 镜像安装
+此方式安装的容器的配置文件是config_sample.yml
+```
+bruno@Matrix:~$ docker run -d -p 5000:5000 --restart=always --name registry registry:2
+```
+
+如果想使用Amazon S3作为存储的话    
+*Here is a slightly more complex example that launches a registry on port 5000, using an Amazon S3 bucket to store images with a custom path, and enables the search endpoint:*
+```
+$ docker run \
+         -e SETTINGS_FLAVOR=s3 \
+         -e AWS_BUCKET=mybucket \
+         -e STORAGE_PATH=/registry \
+         -e AWS_KEY=myawskey \
+         -e AWS_SECRET=myawssecret \
+         -e SEARCH_BACKEND=sqlalchemy \
+         -p 5000:5000 \
+         registry
+```
+
+**案例：从DockerHub上拷贝镜像到本地仓库**
+```
+从DockerHub上下载该镜像
+$ docker pull ubuntu:16.04
+改掉该镜像的标签，携有本地仓库的路径
+$ docker tag ubuntu:16.04 localhost:5000/my-ubuntu
+将该镜像push到本地仓库
+$ docker push localhost:5000/my-ubuntu
+删除位于本地更改前与更改后的缓存镜像(为了下面的pull测试)
+$ docker image remove ubuntu:16.04
+$ docker image remove localhost:5000/my-ubuntu
+从仓库重新拉取该镜像
+$ docker pull localhost:5000/my-ubuntu
+```
+
+### RPM包安装
+前提是Centos7才有这个包(CentOS6没有此RPM包),此方式安装的配置文件是/etc/docker-distribution/registry/config.yml
+```
+# yum install docker-registry -y
+```
+虽然安装的包名叫docker-registry，但是下载下来的包实际是 docker-distribution,启动服务docker-distribution,默认监听5000端口
+```
+# systemctl start docker-distribution
+```
+![docker_registry_rpm](https://brunoju.github.io/img/post/docker_registry_rpm.png)
+
+官方配置模板位于[这里](https://docs.docker.com/registry/configuration/#list-of-configuration-options)，以下是某些配置解释
+```
+In the config_sample.yml file, you'll see several sample flavors:
+common: used by all other flavors as base settings
+local: stores data on the local filesystem
+s3: stores data in an AWS S3 bucket
+ceph-s3: stores data in a Ceph cluster via a Ceph Object Gateway, using the S3 API
+azureblob: stores data in an Microsoft Azure Blob Storage ((docs))
+dev: basic configuration using the local flavor
+test: used by unit tests
+prod: production configuration (basically a synonym for the s3 flavor)
+gcs: stores data in Google cloud storage
+swift: stores data in OpenStack Swift
+glance: stores data in OpenStack Glance, with a fallback to local storage
+glance-swift: stores data in OpenStack Glance, with a fallback to Swift
+elliptics: stores data in Elliptics key/value storage
+```
+
+### 仓库安全
+构建基于Nginx的安全私有仓库不再详述
+- 利用httpasswd创建用户和密码
+- 设置SSL证书，建立https安全套层
