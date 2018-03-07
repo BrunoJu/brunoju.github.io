@@ -76,7 +76,9 @@ $ docker pull localhost:5000/my-ubuntu
 ```
 ![docker_registry_rpm](https://brunoju.github.io/img/post/docker_registry_rpm.png)
 
-官方配置模板位于[这里](https://docs.docker.com/registry/configuration/#list-of-configuration-options)，以下是某些配置解释
+官方配置参数列表位于[这里](https://docs.docker.com/registry/configuration/#list-of-configuration-options)    
+Github上面有[配置模板](https://github.com/docker/docker-registry/blob/master/config/config_sample.yml)    
+以下是某些配置示例
 ```
 In the config_sample.yml file, you'll see several sample flavors:
 common: used by all other flavors as base settings
