@@ -1,0 +1,37 @@
+---
+layout:     post
+title:      "Get data from Excel with Python"
+date:       2018-03-02 17:00:00
+author:     "BrunoJu"
+header-img: "img/post/openpyxl.jpg"
+tags:
+    - script
+---
+
+## Aim
+Hi guys, as an Chinese Operator in SAP SaaS we often need to upgrade the servers' firmware from time to time. We get a Exel file from Germany Operation Team within the servers spreading all over different data centers around the world like the screenshot you can see as below:
+![openpyxl_excel](https://brunoju.github.io/img/post/openpyxl_excel.png)
+
+#### STEP1
+They are all Xen hypervisors. The virtual machines can be live migrated to another hypervisor, that's the one advantage of Xen if you know this virtualization technology well. So we always need to find a spare hypervisor for each one as its destination server with extraordinarily same hardware configuration to migrate its virtual servers and then upgrade the firmware version for the old server. We cannot avoid to do searching for because we must check memory size, network range, CPU model, BIOS settings and so on.        
+
+#### STEP2
+Then we need to open our work website. You can see the so-called "GMP" which is our company work website.
+![openpyxl_gmp](https://brunoju.github.io/img/post/openpyxl_gmp.png)
+
+By clicking "New Internal Ticket" we can use the name of source server and target server to create a ticket for us to deal with.
+![openpyxl_creat_ticket](https://brunoju.github.io/img/post/openpyxl_creat_ticket.png)
+
+
+We want to automate some procedure by writing a script which can get a pair of source server and target server which we have found for migration from Excel then open Firefox and create ticket automatically.
+
+
+# Operation
+
+Emm... I decide to use Python to write the script of course. That's my favorite program language. The first thing came up into my mind was some useful module:
+- **openpyxl module**:    Get data from Excel
+- **selenium module**:    Open Firefox automatically with authorization.
+
+ For creating ticket automatically, my colleague used Javascript to do it and realized successfully.    
+
+ Here is our script, you can see it in GitHub by clicking.   
