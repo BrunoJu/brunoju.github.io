@@ -23,7 +23,7 @@ By clicking "New Internal Ticket" we can use the name of source server and targe
 ![openpyxl_create_ticket](https://brunoju.github.io/img/post/openpyxl_create_ticket.png)
 
 
-We want to automate some procedure by writing a script which can get a pair of source server and target server which we have found for migration from Excel then open Firefox and create ticket automatically.
+We want to automate some procedure by writing a script which can get a pair of source server and target server we have found from Excel then open Firefox and create ticket automatically.
 
 
 # Operation
@@ -33,7 +33,6 @@ Emm... I decide to use Python to write the script of course. That's my favorite 
 - **selenium module**:    Open Firefox automatically with authorization.
 
  For creating ticket automatically, my colleague used Javascript to do it and realized successfully.    
-
  Here is our script, you can see it in GitHub by clicking.
 
 ### PS
