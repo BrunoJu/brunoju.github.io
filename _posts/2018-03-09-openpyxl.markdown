@@ -1,7 +1,7 @@
 ---
 layout:     post
 title:      "Get data from Excel with Python"
-date:       2018-03-02 17:00:00
+date:       2018-03-09 14:00:00
 author:     "BrunoJu"
 header-img: "img/post/openpyxl.jpg"
 tags:
@@ -34,4 +34,4 @@ Emm... I decide to use Python to write the script of course. That's my favorite 
 
  For creating ticket automatically, my colleague used Javascript to do it and realized successfully.    
 
- Here is our script, you can see it in GitHub by clicking.   
+ Here is our script, you can see it in GitHub by clicking.
