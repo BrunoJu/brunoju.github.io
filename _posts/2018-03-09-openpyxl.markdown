@@ -20,7 +20,7 @@ Then we need to open our work website. You can see the so-called "GMP" which is 
 ![openpyxl_gmp](https://brunoju.github.io/img/post/openpyxl_gmp.png)
 
 By clicking "New Internal Ticket" we can use the name of source server and target server to create a ticket for us to deal with.
-![openpyxl_creat_ticket](https://brunoju.github.io/img/post/openpyxl_creat_ticket.png)
+![openpyxl_create_ticket](https://brunoju.github.io/img/post/openpyxl_create_ticket.png)
 
 
 We want to automate some procedure by writing a script which can get a pair of source server and target server which we have found for migration from Excel then open Firefox and create ticket automatically.
@@ -35,3 +35,6 @@ Emm... I decide to use Python to write the script of course. That's my favorite 
  For creating ticket automatically, my colleague used Javascript to do it and realized successfully.    
 
  Here is our script, you can see it in GitHub by clicking.
+
+### PS
+If you are interested in the module openpyxl, you can see ![here](https://openpyxl.readthedocs.io/en/stable/index.html)
