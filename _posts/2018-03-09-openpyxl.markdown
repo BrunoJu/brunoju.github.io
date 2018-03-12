@@ -23,7 +23,7 @@ By clicking "New Internal Ticket" we can use the name of source server and targe
 ![openpyxl_create_ticket](https://brunoju.github.io/img/post/openpyxl_create_ticket.png)
 
 
-We want to automate some procedure by writing a script which can get a pair of source server and target server we have found from Excel then open Firefox and create ticket automatically.
+We want to automate some procedure by writing a script which can get a pair of source server and target server we have written in Excel then open Firefox and create ticket automatically.
 
 
 # Operation
@@ -32,8 +32,8 @@ Emm... I decide to use Python to write the script of course. That's my favorite 
 - **openpyxl module**:    Get data from Excel
 - **selenium module**:    Open Firefox automatically with authorization.
 
- For creating ticket automatically, my colleague used Javascript to do it and realized successfully.    
- Here is our script, you can see it in GitHub by clicking.
+ For creating ticket automatically, my colleague used Javascript to do it in the console of Firefox and realized it successfully.    
+ Here is our intact script, you can see it in our GitHub by clicking [here](https://github.com/BrunoJu/HV_patching_script/blob/master/createInternalTicket.py).
 
 ### PS
-If you are interested in the module openpyxl, you can see ![here](https://openpyxl.readthedocs.io/en/stable/index.html)
+If you are interested in the module openPyxl, you can see [here](https://openpyxl.readthedocs.io/en/stable/index.html)
